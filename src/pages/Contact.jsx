@@ -35,7 +35,8 @@ const Contact = () => {
         from_name: form.name,
         to_name: "Shivang",
         from_email: form.email,
-        to_email: "shivangmdev@gmail.com"
+        to_email: "shivangmdev@gmail.com",
+        message: form.message,
 
       },
       import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
@@ -43,6 +44,8 @@ const Contact = () => {
       setIsLoading(false);
       //TODO: Show success message
       //TODO: Hide an alert
+
+      setForm({name:"", email:"", message:""});
     }).catch((error)=>{
         console.log(error);
         //Todo: Show error message
