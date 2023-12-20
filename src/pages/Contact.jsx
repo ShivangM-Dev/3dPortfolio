@@ -1,5 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState,  } from 'react';
 import emailjs from '@emailjs/browser';
+
+import Alert from '../components/Alert';
+import useAlert from '../hooks/useAlert';
 
 const Contact = () => {
 
@@ -10,7 +13,8 @@ const Contact = () => {
     message:''
   })
 
-  const [isLoading,setIsLoading] = useState(false);
+const {alert, showAlert, hideAlert} = useAlert();
+const [isLoading,setIsLoading] = useState(false);
 
   const handleChange = (e) =>{
 
@@ -33,28 +37,49 @@ const Contact = () => {
       
       {
         from_name: form.name,
-        to_name: "Shivang",
+        to_name: "Shivang Mandal",
         from_email: form.email,
         to_email: "shivangmdev@gmail.com",
         message: form.message,
 
       },
       import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
-    ).then(()=>{
-      setIsLoading(false);
-      //TODO: Show success message
-      //TODO: Hide an alert
+    ) .then(
+      () => {
+        setIsLoading(false);
+        showAlert({
+          show: true,
+          text: "Thank you for your message 😃",
+          type: "success",
+        });
 
-      setForm({name:"", email:"", message:""});
-    }).catch((error)=>{
-        console.log(error);
-        //Todo: Show error message
-    })
-  };
+        setTimeout(() => {
+          hideAlert(false);
+          setForm({
+            name: "",
+            email: "",
+            message: "",
+          });
+        }, [3000]);
+      }).catch((error) => {
+        setIsLoading(false);
+        console.error(error);
+         showAlert({
+          show: true,
+          text: "I didn't receive your message 😢",
+          type: "danger",
+        });
+      })
+    
+};
+
 
   return (
     
-      <section className='relative flex lg:flex-row  flex-col max-container'>
+      <section className='relative flex lg:flex-row  flex-col max-container' >
+          {alert.show && <Alert {...alert} /> }
+          <Alert {...alert} />          
+
         <div className='flex-1 min-w-[50%] felx flex-col'>
           <h1 className="head-text">Let's get in touch!</h1>
 
@@ -117,6 +142,7 @@ const Contact = () => {
 
           </form>
         </div>
+
       </section>
     
   )
